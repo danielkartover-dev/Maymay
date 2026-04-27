@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מזל טוב מאי ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  text-align: center;
+  direction: rtl;
+  background: linear-gradient(135deg,#ff758c,#ff7eb3);
+  overflow-x: hidden;
+}
+
+/* לבבות */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  color: white;
+  animation: floatUp 6s linear infinite;
+}
+@keyframes floatUp {
+  to { transform: translateY(-110vh); opacity: 0; }
+}
+
+h1 { color: white; }
+
+.message {
+  color: white;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+/* לוח */
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(5, 70px);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.card {
+  width: 70px;
+  height: 70px;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+.card.flipped img { display: block; }
+
+.hidden { display:none; }
+
+canvas {
+  border-radius: 10px;
+  margin: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎉 מזל טוב מאי ❤️ 🎉</h1>
+<div class="message" id="loveMsg">תתחילי לשחק אהבה שלי 💖</div>
+
+<button onclick="startMusic()">▶️ הפעלי מוזיקה</button>
+
+<div id="memory-game" class="game-board"></div>
+
+<div id="win-screen" class="hidden">
+  <h2>🥰 מאי אהבה שלי סיימת!</h2>
+  <button onclick="startScratch()">בואי תראי את ההפתעות 🎁</button>
+</div>
+
+<div id="scratch-section" class="hidden">
+  <h2>גרדי את הכרטיסים 🎁</h2>
+  <div id="scratch-container"></div>
+</div>
+
+<div id="end" class="hidden">
+  <h2>💌 מאי אני אוהב אותך הכי בעולם 💌</h2>
+  <p style="color:white">תודה שאת שלי ❤️</p>
+</div>
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// לבבות
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=(15+Math.random()*20)+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},500);
+
+// מוזיקה
+function startMusic(){
+  document.getElementById("music").play();
+}
+
+// הודעות אהבה משתנות
+const messages = [
+  "את הכי יפה בעולם 💖",
+  "אני הכי אוהב אותך ❤️",
+  "את כל החיים שלי 😍",
+  "איזה מזל שיש לי אותך 💕"
+];
+
+// תמונות
+const images=["img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg"];
+let cards=[...images,...images].sort(()=>0.5-Math.random());
+
+let first=null,second=null,lock=false,matches=0;
+const board=document.getElementById("memory-game");
+
+cards.forEach(src=>{
+  const card=document.createElement("div");
+  card.className="card";
+
+  const img=document.createElement("img");
+  img.src=src;
+  card.appendChild(img);
+
+  card.onclick=()=>{
+    if(lock||card.classList.contains("flipped")) return;
+
+    card.classList.add("flipped");
+
+    if(!first){ first=card; }
+    else{
+      second=card;
+      lock=true;
+
+      if(first.innerHTML===second.innerHTML){
+        matches++;
+
+        // הודעה רומנטית מתחלפת
+        document.getElementById("loveMsg").innerText =
+          messages[Math.floor(Math.random()*messages.length)];
+
+        reset();
+
+        if(matches===5){
+          document.getElementById("memory-game").classList.add("hidden");
+          document.getElementById("win-screen").classList.remove("hidden");
+        }
+      } else{
+        setTimeout(()=>{
+          first.classList.remove("flipped");
+          second.classList.remove("flipped");
+          reset();
+        },700);
+      }
+    }
+  };
+
+  board.appendChild(card);
+});
+
+function reset(){
+  first=null;
+  second=null;
+  lock=false;
+}
+
+// גירוד
+function startScratch(){
+  document.getElementById("win-screen").classList.add("hidden");
+  document.getElementById("scratch-section").classList.remove("hidden");
+
+  const surprises=[
+    "צמיד סול 💖",
+    "בושם 🌸",
+    "כרית 🛏️",
+    "בגד ים 👙",
+    "סקוושי 🧸",
+    "תמונה שלנו 📸"
+  ];
+
+  const container=document.getElementById("scratch-container");
+
+  surprises.forEach(text=>{
+    const wrap=document.createElement("div");
+
+    const label=document.createElement("div");
+    label.innerText=text;
+    label.style.width="200px";
+    label.style.height="100px";
+    label.style.lineHeight="100px";
+    label.style.background="white";
+    label.style.position="absolute";
+    label.style.borderRadius="10px";
+
+    const canvas=document.createElement("canvas");
+    canvas.width=200;
+    canvas.height=100;
+
+    const ctx=canvas.getContext("2d");
+    ctx.fillStyle="silver";
+    ctx.fillRect(0,0,200,100);
+
+    const scratch=(x,y)=>{
+      ctx.globalCompositeOperation="destination-out";
+      ctx.beginPath();
+      ctx.arc(x,y,12,0,Math.PI*2);
+      ctx.fill();
+    };
+
+    canvas.addEventListener("mousemove",e=>{
+      const r=canvas.getBoundingClientRect();
+      scratch(e.clientX-r.left,e.clientY-r.top);
+    });
+
+    canvas.addEventListener("touchmove",e=>{
+      const r=canvas.getBoundingClientRect();
+      const t=e.touches[0];
+      scratch(t.clientX-r.left,t.clientY-r.top);
+    });
+
+    wrap.style.position="relative";
+    wrap.appendChild(label);
+    wrap.appendChild(canvas);
+    container.appendChild(wrap);
+  });
+
+  setTimeout(()=>{
+    document.getElementById("end").classList.remove("hidden");
+  },8000);
+}
+</script>
+
+</body>
+</html>
