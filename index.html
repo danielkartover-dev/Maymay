@@ -36,26 +36,26 @@ h1 { color: white; }
 
 /* לוח */
 .game-board {
-  display: grid;
-  grid-template-columns: repeat(5, 70px);
-  gap: 10px;
-  justify-content: center;
-  margin-top: 20px;
+  display:grid;
+  grid-template-columns: repeat(2, 120px);
+  gap:15px;
+  justify-content:center;
+  margin-top:20px;
 }
 
-.card {
-  width: 70px;
-  height: 70px;
-  background: white;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.3s;
+.card{
+  width:120px;
+  height:120px;
+  background:white;
+  border-radius:15px;
+  overflow:hidden;
 }
 
-.card img {
-  width: 100%;
-  height: 100%;
-  display: none;
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
 }
 .card.flipped img { display: block; }
 
