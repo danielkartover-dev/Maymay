@@ -179,63 +179,95 @@ function reset(){
 }
 
 // גירוד
-function startScratch(){
+function function startScratch(){
   document.getElementById("win-screen").classList.add("hidden");
   document.getElementById("scratch-section").classList.remove("hidden");
 
-  const surprises=[
-    "צמיד סול 💖",
-    "בושם 🌸",
-    "כרית 🛏️",
-    "בגד ים 👙",
-    "סקוושי 🧸",
-    "תמונה שלנו 📸"
-  ];
+  // במקום שמות -> מספרים
+  const surprises=["1","2","3","4","5","6"];
 
   const container=document.getElementById("scratch-container");
 
-  surprises.forEach(text=>{
-    const wrap=document.createElement("div");
+  // מנקה אם נפתח שוב
+  container.innerHTML="";
 
+  surprises.forEach(text=>{
+
+    const wrap=document.createElement("div");
+    wrap.style.position="relative";
+    wrap.style.width="220px";
+    wrap.style.height="120px";
+    wrap.style.margin="20px auto";
+
+    // הטקסט שמתחת
     const label=document.createElement("div");
     label.innerText=text;
-    label.style.width="200px";
-    label.style.height="100px";
-    label.style.lineHeight="100px";
-    label.style.background="white";
-    label.style.position="relative";
-    label.style.marginBottom="10px";
-    label.style.borderRadius="10px";
 
+    label.style.width="220px";
+    label.style.height="120px";
+    label.style.lineHeight="120px";
+    label.style.background="white";
+    label.style.borderRadius="15px";
+    label.style.fontSize="28px";
+    label.style.fontWeight="bold";
+    label.style.position="absolute";
+    label.style.top="0";
+    label.style.left="0";
+
+    // שכבת הגירוד
     const canvas=document.createElement("canvas");
-    canvas.width=200;
-    canvas.height=100;
+    canvas.width=220;
+    canvas.height=120;
+
+    canvas.style.position="absolute";
+    canvas.style.top="0";
+    canvas.style.left="0";
+    canvas.style.borderRadius="15px";
 
     const ctx=canvas.getContext("2d");
-    ctx.fillStyle="silver";
-    ctx.fillRect(0,0,200,100);
 
-    const scratch=(x,y)=>{
+    // צבע הכיסוי
+    ctx.fillStyle="silver";
+    ctx.fillRect(0,0,220,120);
+
+    // טקסט "גרדי אותי"
+    ctx.fillStyle="white";
+    ctx.font="20px Arial";
+    ctx.textAlign="center";
+    ctx.fillText("🎁 גרדי אותי",110,65);
+
+    function scratch(x,y){
       ctx.globalCompositeOperation="destination-out";
       ctx.beginPath();
-      ctx.arc(x,y,12,0,Math.PI*2);
+      ctx.arc(x,y,18,0,Math.PI*2);
       ctx.fill();
-    };
+    }
+
+    let isDown=false;
+
+    canvas.addEventListener("mousedown",()=>isDown=true);
+    canvas.addEventListener("mouseup",()=>isDown=false);
 
     canvas.addEventListener("mousemove",e=>{
+      if(!isDown) return;
+
       const r=canvas.getBoundingClientRect();
       scratch(e.clientX-r.left,e.clientY-r.top);
     });
 
+    // מובייל
     canvas.addEventListener("touchmove",e=>{
+      e.preventDefault();
+
       const r=canvas.getBoundingClientRect();
       const t=e.touches[0];
+
       scratch(t.clientX-r.left,t.clientY-r.top);
     });
 
-    wrap.style.position="relative";
     wrap.appendChild(label);
     wrap.appendChild(canvas);
+
     container.appendChild(wrap);
   });
 
